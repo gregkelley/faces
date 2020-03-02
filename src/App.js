@@ -36,15 +36,34 @@ class App extends Component {
       box: {},
       route: 'signin',
       isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
-  componentDidMount() {
-    fetch('http://localhost:3000')
-      .then(response => response.json())
-      .then(console.log);  // shorthand for: .then(data => console.log(data))
+  // componentDidMount() {
+  //   fetch('http://localhost:3000')
+  //     .then(response => response.json())
+  //     .then(console.log);  // shorthand for: .then(data => console.log(data))
+  // }
+
+  // called by register screen. load the new user into the db.
+  loadUser = (data) => {
+    this.setState({user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined //new Date()
+
+    }})
   }
-  
+
   calculateFaceLocation = (data) => {
     //console.log (data);
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -117,8 +136,8 @@ class App extends Component {
             </Fragment>
           : (
               this.state.route === 'signin' 
-              ?  <Signin onRouteChange={this.onRouteChange} />
-              :  <Register onRouteChange={this.onRouteChange} />
+              ?  <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+              :  <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
             )
         }
       </div>
